@@ -239,7 +239,7 @@ module ApplicationHelper
 	end
 
 	def topic_link topic, opts={}
-		link_to (truncate h(topic.subject), :length => 40), forum_topic_posts_url(topic.forum, topic), opts
+		link_to (truncate h(topic.subject), :length => 40), topic_url(topic), opts
 	end
 
 	def mail_link mail
@@ -346,7 +346,7 @@ module ApplicationHelper
   end
 
   def skin_image_tag skin, img_opts={}
-    link_to (image_tag "themes/#{skin.name}/#{skin.thumbnail}", {:alt => skin.name}.merge(img_opts)), skin_url(skin)
+    link_to (image_tag "themes/#{skin.directory}/#{skin.thumbnail}", {:alt => skin.name}.merge(img_opts)), skin_url(skin)
   end
 
   # this function might be broken if rails gets updated
@@ -447,7 +447,7 @@ module ApplicationHelper
   end
 
   def report_link reportable
-    facebox_link "举报", new_report_url(:reportable_id => reportable.id, :reportable_type => reportable.type)
+    facebox_link "举报", new_report_url(:reportable_id => reportable.id, :reportable_type => reportable.class.name)
   end
 
   def canvas_tag opts={}, &block

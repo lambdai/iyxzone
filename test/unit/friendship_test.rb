@@ -3,109 +3,111 @@ require 'test_helper'
 class FriendshipTest < ActiveSupport::TestCase
 
   def setup
-    # @u 给 @f 发请求
-    @u = UserFactory.create
-    @f = UserFactory.create
+    @user1 = UserFactory.create
+    @user2 = UserFactory.create
   end
 
-  test "请求发送后，@f的好友请求计数器加1" do
-    f = FriendshipFactory.build_request @u, @f
+  #
+  # case1
+  # user1 请求加 user2 为好友，但不能重复发送
+  # 此时, user2 还可以给user1发送好友请求，但也不能重复发送
+  #
+  test "case1" do
+    assert_difference "Email.count" do
+      @request = Friendship.create :user_id => @user1.id, :friend_id => @user2.id, :status => Friendship::Request
+    end
 
-    assert_difference "f.friend(true).friend_requests_count" do
-      f.save
+    @user1.reload and @user2.reload
+    assert_equal @user2.friend_requests_count, 1
+    assert_equal @user2.friend_requests, [@request]
+
+    assert_no_difference "Friendship.count" do
+      @request = Friendship.create :user_id => @user1.id, :friend_id => @user2.id, :status => Friendship::Request
+    end
+
+    assert_difference "Email.count" do
+      @request = Friendship.create :user_id => @user2.id, :friend_id => @user1.id, :status => Friendship::Request
+    end
+
+    @user1.reload and @user2.reload
+    assert_equal @user1.friend_requests_count, 1
+    assert_equal @user1.friend_requests, [@request]
+
+    assert_no_difference "Friendship.count" do
+      @request = Friendship.create :user_id => @user2.id, :friend_id => @user1.id, :status => Friendship::Request
     end
   end
 
-  test "请求被接受后，@f 的请求计数器减1" do
-    f = FriendshipFactory.create_request @u, @f
-
-    assert_difference "f.friend(true).friend_requests_count", -1 do
-      f.accept
+  #
+  # case2
+  # user1发送好友请求，user2先拒绝后接受
+  #
+  test "case2" do
+    assert_difference "Email.count" do
+      @request = Friendship.create :user_id => @user1.id, :friend_id => @user2.id, :status => Friendship::Request
     end
-  end
 
-  test "请求被接受后，@f 和 @u 的好友计数器加1" do
-    f = FriendshipFactory.create_request @u, @f
+    @user1.reload and @user2.reload
+    assert_equal @user1.friends_count, 0
+    assert_equal @user2.friends_count, 0
+    assert_equal @user2.friend_requests_count, 1
 
-    assert_difference ["f.friend(true).friends_count", "f.user(true).friends_count"] do
-      f.accept
+    assert_difference "Notification.count" do
+      @request.decline
     end
-  end
 
-  test "请求被拒绝后，@f 的好友请求计数器减一" do
-    f = FriendshipFactory.create_request @u, @f
+    @user1.reload and @user2.reload
+    assert_equal @user1.friends_count, 0
+    assert_equal @user2.friends_count, 0
+    assert_equal @user2.friend_requests_count, 0
 
-    assert_difference "f.friend(true).friend_requests_count", -1 do
-      f.destroy
+    assert_difference "Email.count" do
+      @request = Friendship.create :user_id => @user1.id, :friend_id => @user2.id, :status => Friendship::Request
     end
-  end
 
-  test "请求被拒绝后，@f 和 @u 的好友计数器不变" do
-    f = FriendshipFactory.create_request @u, @f
-
-    assert_no_difference ["f.user(true).friends_count", "f.friend(true).friends_count"] do
-      f.destroy 
+    assert_difference ["Email.count", "Notification.count"] do
+      @request.accept
     end
-  end
 
-  test "解除好友关系后，@u 和 @f 的好友计数器都减一" do
-    f1, f2 = FriendshipFactory.create_friend @u, @f
-    @u.reload and @f.reload
+    @user1.reload and @user2.reload
+    assert_equal @user1.friends_count, 1
+    assert_equal @user2.friends_count, 1
+    assert_equal @user2.friend_requests_count, 0
+  end
  
-    assert_difference ["f1.user(true).friends_count", "f1.friend(true).friends_count"], -1 do
-      f1.cancel
-    end
-  end
+  #
+  # case3
+  # 2人互相发送好友请求，1方拒绝，另一个请求还在
+  # 如果1方接受，那另一方的请求会被删除
+  #
+  test "case3" do
+    @request1 = Friendship.create :user_id => @user1.id, :friend_id => @user2.id, :status => Friendship::Request
+    @request2 = Friendship.create :user_id => @user2.id, :friend_id => @user1.id, :status => Friendship::Request
 
-  test "缺少user_id" do
-    f = FriendshipFactory.build :friend_id => @f.id
-    f.save
-
-    assert_not_nil f.errors.on(:user_id)
-  end
-
-  test "缺少friend_id" do
-    f = FriendshipFactory.build :user_id => @u.id
-    f.save
-
-    assert_not_nil f.errors.on(:friend_id)
-  end
-
-  test "状态为空" do
-    f = FriendshipFactory.build :user_id => @u.id, :friend_id => @f.id, :status => nil 
-    f.save
-
-    assert_not_nil f.errors.on(:status)
-  end
-
-  test "状态不对" do
-    f = FriendshipFactory.build :user_id => @u.id, :friend_id => @f.id, :status => 100 
-    f.save
-
-    assert_not_nil f.errors.on(:status)
-  end
+    @user1.reload and @user2.reload
+    assert_equal @user1.friends_count, 0
+    assert_equal @user2.friends_count, 0
+    assert_equal @user1.friend_requests_count, 1
+    assert_equal @user2.friend_requests_count, 1
   
-  test "不能把好友关系变成好友请求" do
-    f1, f2 = FriendshipFactory.create_friend @u, @f
-    f1.update_attributes(:status => Friendship::Request)
+    assert_difference "Friendship.count", -1 do
+      @request1.decline
+    end
 
-    assert_not_nil f1.errors.on(:status)
+    @request1 = Friendship.create :user_id => @user1.id, :friend_id => @user2.id, :status => Friendship::Request
+
+    # 请求被删掉，同时新的friendship建立
+    assert_no_difference "Friendship.count" do
+      @request1.accept
+    end
+
+    assert_nil Friendship.find_by_id(@request2.id)
+
+    @user1.reload and @user2.reload
+    assert_equal @user1.friends_count, 1
+    assert_equal @user2.friends_count, 1
+    assert_equal @user1.friend_requests_count, 0
+    assert_equal @user2.friend_requests_count, 0
   end
-
-  test "无法重复创建好友请求" do
-    FriendshipFactory.create_request @u, @f
-    f = FriendshipFactory.build_request @u, @f
-    f.save
-
-    assert_not_nil f.errors.on(:friend_id)
-  end
-
-  test "如果已经是好友了，无法创建好友请求" do
-    FriendshipFactory.create_friend @u, @f
-    f = FriendshipFactory.build_request @u, @f
-    f.save
-
-    assert_not_nil f.errors.on(:friend_id)
-  end
-
+ 
 end

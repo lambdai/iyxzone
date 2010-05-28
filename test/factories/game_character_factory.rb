@@ -14,8 +14,15 @@ class GameCharacterFactory
       profession  = game.professions.first
       race        = game.races.first
     end
+
+    if cond[:user_id].blank?
+      user = Factory.create :user
+    else
+      user = User.find(cond[:user_id])
+    end
        
     cond = {
+      :user_id        => user.id,
       :game_id        => game.id,
       :area_id        => area.id,
       :server_id      => server.id,
