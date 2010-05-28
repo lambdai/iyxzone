@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
 
   has_one :rss_feed
 
+	has_many :temp_rss_articles
 
   has_many :user_tasks
   

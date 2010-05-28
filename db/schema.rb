@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100525065805) do
+ActiveRecord::Schema.define(:version => 20100526092134) do
 
   create_table "albums", :force => true do |t|
     t.string   "type"
@@ -704,11 +704,15 @@ ActiveRecord::Schema.define(:version => 20100525065805) do
   end
 
   create_table "skins", :force => true do |t|
-    t.string   "name",                              :null => false
-    t.string   "css",                               :null => false
-    t.string   "thumbnail",  :default => "missing"
+    t.string   "name",                               :null => false
+    t.string   "css",                                :null => false
+    t.string   "thumbnail",   :default => "missing"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "category"
+    t.integer  "privilege",   :default => 0
+    t.text     "access_list"
+    t.string   "directory"
   end
 
   create_table "statuses", :force => true do |t|
@@ -758,6 +762,15 @@ ActiveRecord::Schema.define(:version => 20100525065805) do
     t.datetime "expires_at"
     t.integer  "duration"
     t.integer  "state"
+  end
+
+  create_table "temp_rss_articles", :id => false, :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "article_index"
+    t.text     "title"
+    t.string   "link"
+    t.text     "article"
+    t.datetime "create_at"
   end
 
   create_table "topics", :force => true do |t|
@@ -843,6 +856,7 @@ ActiveRecord::Schema.define(:version => 20100525065805) do
     t.datetime "updated_at"
     t.datetime "remember_me_untils"
     t.string   "remember_code"
+    t.string   "invitee_code"
   end
 
   add_index "users", ["login", "pinyin"], :name => "index_users_on_login_and_pinyin"

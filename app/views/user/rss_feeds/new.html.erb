@@ -1,3 +1,5 @@
-<%= debug params %>
-
-
+<% form_tag :controller => "rss_feeds", :action => "view" do %>
+  <%= text_field_tag "rsslink" %>
+	<%= submit_tag "查看文章" %>
+	<%= submit_tag "放弃日志更新", :name => "drop"%>
+<% end %>

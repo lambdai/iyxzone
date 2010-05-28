@@ -1,4 +1,5 @@
-<% form_tag rss_feeds_path, :html => {:method => :post} do %>
-  <%= text_field_tag "rsslink" %>
-	<%= submit_tag "查看文章" %>
+<% if @rss_feed %>
+<%= content_tag :div, "当前的rss_feed是" + @rss_feed.link %>
+<% else %>
+<%= content_tag :div, "您没有设定站外日志" %>
 <% end %>
