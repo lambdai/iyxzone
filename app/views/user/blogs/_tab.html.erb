@@ -1,5 +1,18 @@
       <div class="tab tab01">
-        <div class="right"><%= application_link %><%= link_to "写新日志", new_blog_url %></div>
+				<div class="right">
+					<%= link_to "日志导入", new_rss_feed_url, :class =>"blogImportBtn w-l",
+					:onmouseover => "$('import_panel').show();",
+					:onmouseout  => "$('import_panel').hide();"%>
+					<%= application_link %>
+					<%= link_to "写新日志", new_blog_url %>
+					<% content_tag :div,  {:id => "import_panel", :style =>
+					"display:none;position:absolute;top:33px;left:5px;background:#fff;width:180px;border:1px
+					solid #bdd6ad;padding:10px;line-height:20px;color:#666"} do %>
+					<%= content_tag :span, '', {:class => "arrow-tip02"} %>
+					可以将你的站外日志导入到一起游戏网日志
+					<% end %>
+				</div>
+			
         <ul>
           <% subject = get_subject user %>
           <li <% if hover==0 %>class='hover'<% end %>><span><%= link_to "热门日志", hot_blogs_url %></span></li>

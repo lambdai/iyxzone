@@ -1,0 +1,68 @@
+<% content_for :html_title, "#{current_user.login} - 导入日志 - 17Gaming.com" %>
+<% content_for :html_description, "#{current_user.login}的导入日志 - 17Gaming.com (一起游戏网)愿做网络游戏玩家的精神家园。" %>
+<% content_for :html_keywords, "#{current_user.login}, 17Gaming, 一起游戏, 一起游戏网, 网络游戏玩家, 游戏社区, 社交网站, 网络游戏社区" %>
+<% canvas_tag do %>
+  <h1 class="app-log">日志</h1>
+  <div class="box02 canvas_int space">
+    <div class='appcontent01'>
+      <div id='errors'></div>
+      <div class="blogImport">
+        <h2 class="fix">
+					<strong class="left">站外日志导入</strong>
+					<%= link_to "返回我的日志", blogs_url(:uid => current_user.id), :class => "right" %>
+				</h2>
+				<% form_tag rss_feeds_path do %>
+        <div class="formcontent step-2">
+          <div class="s_clear"><span class="button"><span><button type="submit">导入所选文章</button></span></span></div>
+          <div class="box02 space">
+            <div class="func">
+              <table cellpadding="0">
+                <tr>
+                  <td width="50" align="center">
+										<%= check_box_tag "check_all", "true", true,
+										:onclick => "
+										$$('input.article').each( function(a){ a.checked =
+										$(this).checked}.bind(this) ); 
+										"
+										%> 全选 
+									</td>
+                  <td width="280">标题</td>
+                  <td width="180">游戏类别</td>
+                  <td width="200">谁能浏览这篇日志</td>
+                </tr>
+              </table>
+            </div>
+            <div class="list">
+              <table cellpadding="0">
+								<% @rss.items.each_with_index do |item, i| %>
+                <tr class="jl-cutline">
+                  <td width="50" align="center">
+										<%= check_box_tag "items[]", i, true, :class =>
+										"article", :onclick => "$('check_all').checked =
+										$$('input.article').all(function(a){ return a.checked})"%> 
+									</td>
+                  <td width="280"><div class="title"> <%= link_to item.title, item.link %> </div></td>
+                  <td width="180"> 	<%= select_tag "game[#{i}]",
+																				options_from_collection_for_select(current_user.games, 
+																				:id, :name) %> </td>
+                  <td width="200"><%= select_tag "privilege[#{i}]", options_for_select(privilege_options) %> </td>
+                </tr>
+								<% end %>
+              </table>
+            </div>                            
+          </div>  
+          <div class="s_clear space">                     
+            <span class="button"><span><button name="commit" type="submit">导入所选文章</button></span></span> 
+          </div>    
+        </div>
+      </div>
+			<% end %>
+    </div>
+  </div>
+<% end %>
+
+  
+	
+
+
+

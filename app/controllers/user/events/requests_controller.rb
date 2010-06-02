@@ -12,7 +12,7 @@ class User::Events::RequestsController < UserBaseController
   end
 
   def create
-    @request = @event.requests.build (params[:request] || {}).merge({:participant_id => current_user.id})
+    @request = @event.requests.build( (params[:request] || {}).merge({:participant_id => current_user.id}) )
     
     unless @request.save
       render_js_error '发生错误，可能活动已经过期了'

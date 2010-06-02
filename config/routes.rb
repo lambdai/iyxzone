@@ -82,7 +82,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.namespace :user, :name_prefix => '', :path_prefix => ''  do |users|
 
-		users.resources :rss_feeds, :member => {:view => :post}
+		users.resources :rss_feeds, :collection => {:import => :post}
 		
 		users.resources :tasks
 		

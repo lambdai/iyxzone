@@ -20,7 +20,7 @@ class User::TasksController < ApplicationController
 			@user_task = UserTask.find(:first, :conditions => ["user_id =? AND task_id =?", 
 			current_user.id,  
 			@current_task.id])
-			logger.error ("--"*20) + "PARAMS[:redo_check]: #{params[:redo_check]}"
+			logger.error("--"*20) + "PARAMS[:redo_check]: #{params[:redo_check]}"
 			if @current_task.can_be_select_by?(current_user, (params[:redo_check]? true :false))
 				UserTask.delete_all({:user_id => current_user.id, :task_id => @current_task.id})
 				@user_task = UserTask.new(:user_id => current_user.id, :task_id => @current_task.id)

@@ -1,5 +1,63 @@
-<% form_tag :controller => "rss_feeds", :action => "view" do %>
-  <%= text_field_tag "rsslink" %>
-	<%= submit_tag "查看文章" %>
-	<%= submit_tag "放弃日志更新", :name => "drop"%>
+<% content_for :html_title, "#{current_user.login} - 导入日志 - 17Gaming.com" %>
+<% content_for :html_description, "#{current_user.login}的导入日志 - 17Gaming.com (一起游戏网)愿做网络游戏玩家的精神家园。" %>
+<% content_for :html_keywords, "#{current_user.login}, 17Gaming, 一起游戏, 一起游戏网, 网络游戏玩家, 游戏社区, 社交网站, 网络游戏社区" %>
+<% canvas_tag do %>
+  <h1 class="app-log">日志</h1>
+  <div class="box02 canvas_int space">
+    <div class='appcontent01'>
+      <div id='errors'></div>
+      <div class="blogImport">
+        <h2 class="fix">
+					<strong class="left">站外日志导入</strong>
+					<%= link_to "返回我的日志", blogs_url(:uid => current_user.id), :class => "right" %>
+				</h2>
+        
+        <div class="formcontent step-1">
+          <h3>导入站外日志</h3>
+          <p>你可以将你站外博客中的文章导入到一起游戏网，成功导入后那些文章将会出现在你的一起游戏网日志里。当系统检测到该站外博客有更新时，会自动同步更新到你的一起游戏网日志, 你的好友会看到并进行评论。</p>
+          <p><strong>导入您自己的日志，尊重他人著作权。</strong>请不要
+						在一天内频繁的替换导入信息，如果检测到恶意导入，你的日志导入
+						和发表日志功能都将会受到影响。</p>
+					<% form_tag :controller => import_rss_feeds_path do %>
+          <div class="rows s_clear">
+            <div class="fldid"><strong>地址：</strong></div>
+            <div class="fldvalue">
+							<div class="textfield left">
+								<%= text_field_tag "rsslink", @link, :size => 40 %>
+							</div>
+						</div>
+          </div>
+          <div class="rows s_clear">
+            <div class="fldid">&nbsp;</div>
+						<!-- <div class="fldvalue"><input type="checkbox" />我已阅 --
+							-- 读，并接受 <a href="#">一起游戏网导入日志服务条款</a>。 --
+							-- </div> 
+							-->
+          </div>
+          <div class="rows s_clear">
+            <div class="fldid">&nbsp;</div>
+            <div class="fldvalue">
+              <span class="button">
+								<span>
+									<button type="submit" name="commit"> 开始导入 </button> 
+
+								</span>
+							</span>
+              <span class="button">
+								<span>
+									<button type="submit" name="drop"  > 放弃日志更新 </button>
+								</span>
+							</span>
+            </div>
+          </div>
+					<% end %>
+
+        </div>
+      </div>
+    </div>
+  </div>
 <% end %>
+
+  
+	
+
