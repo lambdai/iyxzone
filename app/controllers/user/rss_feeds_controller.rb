@@ -15,8 +15,10 @@ class User::RssFeedsController < UserBaseController
   end
 
   def create
-    @rss_feed = current_user.create_rss_feed(:link => params[:rsslink],
-                                 :last_update => DateTime.now)
+    #@rss_feed = current_user.create_rss_feed(:link => params[:rsslink],
+    #                             :last_update => DateTime.now)
+		@rss_feed = current_user.rss_feed
+		#logger.error "#{current_user.temp_rss_articles.all.inspect}"
     if @temp_rss_article = current_user.temp_rss_articles.all
       @temp_rss_article.each do |article|
         if params[:items].include? article.article_index.to_s
@@ -74,6 +76,7 @@ protected
       TempRssArticle.create(:user_id => current_user.id, :article_index => i, :title => item.title,
                             :link => item.link, :article => item.description, :create_at => DateTime.now)
     end
+		RssFeed.delete_all("user_id = #{current_user.id}")
     RssFeed.create(:user_id => current_user.id, :link => source, :last_update => DateTime.now)
   end
   
@@ -84,7 +87,7 @@ protected
                              :game_id => params[:game][temp_article.article_index.to_s].to_i,
                              :content => temp_article.article
                              )
-    blog.save
+    blog.save!
     #logger.error "#{blog.errors.inspect}"
     #logger.error "--"*10 + "add article #{temp_article.title}"
     #should never rescue
