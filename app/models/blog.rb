@@ -45,7 +45,7 @@ class Blog < ActiveRecord::Base
 
   validates_presence_of :content, :message => "不能为空" 
 
-  validates_size_of :content, :within => 1..10000, :too_long => "最长10000字节", :too_short => "最短1个字节", :allow_nil => true
+  validates_size_of :content, :within => 1..50000, :too_long => "最长50000字节", :too_short => "最短1个字节", :allow_nil => true
 
   validates_presence_of :game_id, :message => "不能为空", :on => :create
 
