@@ -17,6 +17,7 @@ class User::RssFeedsController < UserBaseController
   def create
     @rss_feed = current_user.create_rss_feed(:link => params[:rsslink],
                                  :last_update => DateTime.now)
+=begin
     if @temp_rss_article = current_user.temp_rss_articles.all
       @temp_rss_article.each do |article|
         if params[:items].include? article.article_index.to_s
@@ -25,6 +26,7 @@ class User::RssFeedsController < UserBaseController
       end
       TempRssArticle.delete_all("user_id = #{current_user.id}")
     end
+=end
     flash[:notice] = "成功导入文章"
     redirect_to blogs_url(:uid => current_user.id)
   end

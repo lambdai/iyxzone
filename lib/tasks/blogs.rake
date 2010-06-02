@@ -16,4 +16,14 @@ namespace :blogs do
     end
   end
 
+	desc "从rss链接获得用户的blog"
+	task :get_blogs_from_rss => :environment do
+	  rss_feeds = RssFeed.all
+		pool = ThreadPool.new(10) 
+		rss_feeds.each do |rss_feed|  
+		  pool.process {rss_feed.update_blogs}  
+		end  
+
+	end
+
 end
