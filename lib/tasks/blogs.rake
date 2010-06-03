@@ -17,12 +17,18 @@ namespace :blogs do
   end
 
 	desc "从rss链接获得用户的blog"
-	task :get_blogs_from_rss => :environment do
+	task :get_rss_blog => :environment do
+		require 'threadpool'
 	  rss_feeds = RssFeed.all
+
 		pool = ThreadPool.new(10) 
 		rss_feeds.each do |rss_feed|  
-		  pool.process {rss_feed.update_blogs}  
+		  pool.process do #{$stderr.puts rss_feed}  
+				rss_feed.update_blogs({:log => true})
+			end
 		end  
+		pool.join
+
 
 	end
 
