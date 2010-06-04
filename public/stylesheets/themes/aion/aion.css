@@ -48,6 +48,6 @@ a.jl-more {background:url(/images/themes/aion/arr-more.gif) no-repeat;color:#a05
 .button span button{color:#9b9b9a}
 .bookbox .textarea-wrap .textarea-wide textarea {background:url(/images/themes/aion/textarea_bg.jpg) no-repeat right -70px;border:1px solid #000}
 .multibox .diary-box {border-bottom:1px dashed #4d4d4d;}
-.feed-img-list {border-top:1px dashed #5d5d5d;}
+#comments .feed-img-list {border-top:1px dashed #4d4d4d;}
 #footer{background:url(/images/themes/aion/bottom_bd.png) repeat-x;width:100%;padding:30px 0;line-height:22px}
 

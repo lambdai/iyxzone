@@ -54,8 +54,8 @@ a.jl-more {background:url(/images/themes/dota/arr-more.png) no-repeat;color:#f0b
 .button span button{color:#799eaa}
 .button-gray span button{color:#666}
 .bookbox .textarea-wrap .textarea-wide textarea {background:#061c24;border:1px solid #1a4755}
-.multibox .diary-box {border-bottom:1px dashed #dcddd0;}
+.multibox .diary-box {border-bottom:1px dashed #4d4d4d;}
 .multibox .jl-data-table th {color:#f0bd0c;}
-.feed-img-list {border-top:1px dashed #dcddd0;}
+#comments .feed-img-list {border-top:1px dashed #4d4d4d;}
 #footer{width:100%;padding:30px 0;line-height:22px;color:#0b6491}
 #footer a{color:#0b6491}

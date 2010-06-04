@@ -1,3 +1,6 @@
+require 'task_prerequisite'
+require 'task_requirement'
+
 class Task < ActiveRecord::Base
 
   EVERYDAY = 0
@@ -17,11 +20,37 @@ class Task < ActiveRecord::Base
   validate_on_create :prerequisite_is_valid
 
   validate_on_create :requirement_is_valid
-
-  def prerequisites
-    prerequisite.map{|key, value| "#{key}_prerequisite".camelize.constantize.new(value)}
+  
+  def select_this user
+    @user_task = UserTask.create(:task_id => id, :user_id => user.id)
+  end
+  
+  def complete_this user
+    #    get_user_task(user_id).complete
+    #   give_reward user_id
+  end
+  
+  def give_reward user
+    true
+  end
+  
+  def get_user_task user
+    @user_task ||= UserTask.find(:first, :conditions => ["user_id = ? AND task_id = ? ", user.id, id])
+  end
+  
+  def status
+    if @user_task
+      @user_task.achievement
+    else
+      nil
+    end
   end
 
+
+  def prerequisites
+    prerequisite.map{|key, value| "#{key}_prerequisite".camelize.constantize.new(value) }
+  end
+  
   def is_selectable_by? user
     prerequisites.all? {|p| p.satisfy? user}
   end
@@ -50,7 +79,7 @@ class Task < ActiveRecord::Base
 		return true if expires_at < DateTime.now
 	end
 
-protected
+#protected
 
   def prerequisite_is_valid
     prerequisites.all? {|p| p.valid? }

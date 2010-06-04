@@ -7,6 +7,8 @@ class UserTask < ActiveRecord::Base
 	serialize	:achievement, Hash
 
   validate_on_create :task_is_valid
+  
+  before_create :initialize_achievements
 
   def notify_create resource
     task.requirements.each { |r| r.notify_create resource, achievement }
@@ -35,9 +37,11 @@ protected
 
   def initialize_achievements
     self.achievement = {}
+    puts "before requirement to achievement"
     task.requirements.each do |r|
-      r.init_achievement achievement
+      r.init_achievement achievement, user
     end
+    puts achievement.inspect
   end
 
 end

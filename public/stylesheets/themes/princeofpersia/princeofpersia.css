@@ -57,7 +57,7 @@ a.gray:link,a.gray:visited,a.gray:active,.home-wrap .feed-list-box a.gray{color:
 .feed-list-box h4 span{background:url(/images/themes/princeofpersia/body_bg.jpg)}
 a.jl-more {background:url(/images/themes/princeofpersia/arr-more.png) no-repeat;color:#ffb400}
 .bookbox .textarea-wrap .textarea-wide textarea {background:url(/images/themes/princeofpersia/textarea_bg.jpg) no-repeat;border:1px solid #0f0f0e;color:#999}
-.feed-img-list {border-top:1px dashed #4f6d7b;}
+#comments .feed-img-list {border-top:1px dashed #4f6d7b;}
 .multibox .diary-box {border-bottom:1px dashed #4f6d7b;}
 
 .jl-my-gold{color:#999}
