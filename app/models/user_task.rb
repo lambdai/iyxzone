@@ -10,13 +10,26 @@ class UserTask < ActiveRecord::Base
   
   before_create :initialize_achievements
 
+  named_scope :not_done, :conditions => { :done_at => nil}
   def notify_create resource
     task.requirements.each { |r| r.notify_create resource, achievement }
     self.save
   end
 
-  def is_done?
+  def give_reward
+    done_at = DateTime.now
+  end
+
+  def is_expired?
+    DateTime.now > expires_at
+  end
+
+  def is_complete?
     task.requirements.all? {|r| r.satisfy? achievement}
+  end
+
+  def is_done?
+    done_at
   end
 
   before_create :initialize_achievements

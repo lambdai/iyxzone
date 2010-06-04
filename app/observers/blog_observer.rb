@@ -68,7 +68,7 @@ class BlogObserver < ActiveRecord::Observer
 
     # check tasks
     if blog.draft_was and !blog.draft
-      poster.user_tasks.each { |t| t.notify_create blog }
+      poster.user_tasks.not_done.each { |t| t.notify_create blog }
     end
 
     # issue feeds if necessary
