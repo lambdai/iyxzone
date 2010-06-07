@@ -15,10 +15,7 @@ class User::RssFeedsController < UserBaseController
   end
 
   def create
-    #@rss_feed = current_user.create_rss_feed(:link => params[:rsslink],
-    #                             :last_update => DateTime.now)
 		@rss_feed = current_user.rss_feed
-		#logger.error "#{current_user.temp_rss_articles.all.inspect}"
     if @temp_rss_article = current_user.temp_rss_articles.all
       @temp_rss_article.each do |article|
         if params[:items].include? article.article_index.to_s
@@ -85,14 +82,13 @@ protected
     blog = current_user.blogs.build(:title => temp_article.title,
                              :privilege => params[:privilege][temp_article.article_index.to_s].to_i,
                              :game_id => params[:game][temp_article.article_index.to_s].to_i,
-                             :content => temp_article.article
+                             :content => temp_article.article,
+														 :type => "rss_blog",
+														 :orig_link => temp_article.link
                              )
     blog.save!
-    #logger.error "#{blog.errors.inspect}"
-    #logger.error "--"*10 + "add article #{temp_article.title}"
-    #should never rescue
   rescue
-    logger.error "User #{current_user.id} tried to save blog but failed"
+    logger.error "User #{current_user.id} tried to save blog #{temp_article.title} but failed"
     logger.error "temp_article is\n #{temp_article.inspect}"
   end
   
