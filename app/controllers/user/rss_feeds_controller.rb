@@ -91,7 +91,9 @@ protected
     blog = current_user.blogs.build(:title => temp_article.title,
                              :privilege => params[:privilege][temp_article.article_index.to_s].to_i,
                              :game_id => params[:game][temp_article.article_index.to_s].to_i,
-                             :content => temp_article.article
+                             :content => temp_article.article,
+														 :type => "rss_blog",
+														 :orig_link => temp_article.link
                              )
     blog.save!
     #logger.error "#{blog.errors.inspect}"
