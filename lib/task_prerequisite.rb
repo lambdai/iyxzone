@@ -58,10 +58,9 @@ end
 
 ["character","game", "sharing", "notice", "notification",
  "friend", "album","photo", "guild", "poll", "video", "status"].each do |klass_name|
-  klass = Object.const_set( "#{klass_name}_more_than_prerequisite".camelize, Class.new )
+  klass = Object.const_set( "#{klass_name}_more_than_prerequisite".camelize, Class.new(TaskPrerequisite) )
   klass.class_eval do
     
-    klass.inherite TaskPrerequisite
     define_method(:satisfy?) do |user|
       user.send(klass_name.pluralize+"_count") > val
     end

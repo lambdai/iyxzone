@@ -1,4 +1,5 @@
 require 'test_helper'
+require(File.join(File.dirname(__FILE__), 'login_mod'))
 
 class TaskFlowTest < ActionController::IntegrationTest
   
@@ -10,9 +11,9 @@ class TaskFlowTest < ActionController::IntegrationTest
 
   test "Task Create" do
     t1 = TaskFactory.create
-    assert_equal t1.description.title, "task_1"
+    assert_equal t1.description[:title], "task_1"
     t2 = TaskFactory.create
-    assert_equal t2.description.title, "task_2"
+    assert_equal t2.description[:title], "task_2"
   end
 
 end

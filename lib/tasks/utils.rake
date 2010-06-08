@@ -1,6 +1,6 @@
 require 'pty'
 require 'expect'
-require 'aws/s3'
+#require 'aws/s3'
 
 def exec_as user_name, &block
   `su #{user_name}`
@@ -171,6 +171,7 @@ end
 #
 # 负责将数据库备份到S3
 #
+=begin
 class S3Backup
 
   include AWS::S3
@@ -225,3 +226,5 @@ protected
   end
 
 end
+
+=end

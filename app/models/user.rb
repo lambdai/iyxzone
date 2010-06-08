@@ -13,11 +13,11 @@ class User < ActiveRecord::Base
   has_many :idols, :through => :idolships, :source => :idol
 
   def has_fan? fan
-    fanships.map(&:fan_id).include? (fan.is_a?(Integer) ? fan : fan.id)
+    fanships.map(&:fan_id).include?(fan.is_a?(Integer) ? fan : fan.id)
   end
 
   def has_idol? idol
-    idolships.map(&:idol_id).include? (idol.is_a?(Integer) ? idol : idol.id)
+    idolships.map(&:idol_id).include?(idol.is_a?(Integer) ? idol : idol.id)
   end
 
   has_one :rss_feed
