@@ -68,8 +68,8 @@ Factory.define :guestbook do |g|
 end
 
 Factory.define :task do |t|
-  t.prerequisite({:blog_more_than => 1})
-  t.requirement({:blog_more_than => 5})
+  t.prerequisite({:blog_more_than => -1})
+  t.requirement({:blog_more_than => 0})
   t.reward({:gold => 1})
   t.sequence(:description) {|n| {:title => "task_#{n}"}}
   t.catagory 1

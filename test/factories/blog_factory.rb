@@ -1,8 +1,15 @@
 class BlogFactory
 
   def self.create cond={}
+    
+    if cond[:poster_id]
+      poster = User.find(cond[:poster_id])
+    else
+
     # create poster
-    poster = Factory.create :user
+      poster = Factory.create :user
+    end
+
 
     # create character
     game        = Factory.create :game
