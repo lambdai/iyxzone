@@ -53,6 +53,9 @@ class User::RssFeedsController < UserBaseController
     @rss_feed = current_user.rss_feed
     @link = if @rss_feed; @rss_feed.link;else; "请输入rss地址"; end
   end
+	def get_rss
+		@rss
+	end
 protected
   def clear_my_rss_feed
     flash[:notice] = "您已经放弃更新您的站外日志"
@@ -64,9 +67,11 @@ protected
   #parse错误是RSS::NotWellFormedError
   def get_blogs source
     source = secure_parse source
+
     content = open(source).read
     @rss = RSS::Parser.parse(content)
 
+		
     TempRssArticle.delete_all("user_id = '#{current_user.id}'")
     @rss.items.each_with_index do |item,i|
       #current_user.create_temp_rss_article
@@ -103,4 +108,5 @@ protected
       return source
     end
   end
+
 end

@@ -66,3 +66,14 @@ Factory.define :guestbook do |g|
   g.priority Guestbook::Urgent
   g.catagory '日志'
 end
+
+Factory.define :task do |t|
+  t.prerequisite {:blog_more_than => 1}
+  t.requirement {:blog_more_than => 5}
+  t.reward {:gold => 1}
+  t.sequence(:description) {|n| {:title => "task_#{n}"}}
+  t.catagory 1
+  t.starts_at { DateTime.now }
+  t.expires_at { DateTime.now + 1 }
+  t.duration 10000
+end
