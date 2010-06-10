@@ -12,7 +12,8 @@ class TaskRequirement
   def satisfy?
   end
 
-  def notify_create resource, hash
+  def notify_create resource, achievement
+     return unless resource.is_a? @@expect_class
   end
 
   def valid?
@@ -43,7 +44,7 @@ class BlogAddRequirement < TaskRequirement
   end
   
   def satisfy? achievement
-    achievement[:blogs_add] >= @val
+    achievement[:blogs_add] > @val
   end
 
   def notify_create resource, achievement
@@ -72,3 +73,40 @@ class CommentDifferentBlogsRequirement < TaskRequirement
   end
 
 end
+
+
+["character","game", "sharing", "notice", "notification",
+ "friend", "album","photo", "guild", "poll", "video", "status"].each do |klass_name|
+  klass = Object.const_set( "#{klass_name}_more_than_requirement".camelize, Class.new(TaskRequirement) )
+  klass.class_eval do
+    define_method(:expected_class) do
+      if klass_name == "character"
+        "GameCharacter"
+      else
+        klass_name.camelize
+      end
+    end
+
+    $stderr.puts klass.name, klass.send(:class_variable_get, :@@expect_class).inspect
+
+    define_method("init_achievement") do |achievement, user|
+      achievement["#{klass_name.pluralize}_count".to_sym] = user.send("#{klass_name.pluralize}_count".to_sym)
+    end
+  
+    define_method("satisfy?") do |achievement|
+      $stderr.puts "req: " + @val.to_s
+      $stderr.puts "i have: " + achievement["#{klass_name.pluralize}_count".to_sym].to_s
+      achievement["#{klass_name.pluralize}_count".to_sym] > @val
+    end
+
+    define_method("notify_create") do |resource, achievement|
+      
+      return unless resource.is_a? expected_class.constantize  # my_expect #klass.class_variable_get(:@@expect_class)
+      achievement["#{klass_name.pluralize}_count".to_sym] += 1
+    end
+    
+    define_method("notify_destroy") do |resource|
+    end
+  end
+end
+

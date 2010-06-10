@@ -13,6 +13,9 @@ class GameCharacterObserver < ActiveRecord::Observer
     character.game.raw_increment :characters_count
     character.user.raw_increment :characters_count
 
+    #for task
+    character.user.user_tasks.each { |t| t.notify_create character }
+    $stderr.puts CharacterMoreThanRequirement.send(:class_variable_get, :@@expect_class)
     # issue feeds if necessary
 		character.deliver_feeds :data => {:type => 0}
 	end

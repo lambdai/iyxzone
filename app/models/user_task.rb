@@ -14,6 +14,8 @@ class UserTask < ActiveRecord::Base
   def notify_create resource
     task.requirements.each { |r| r.notify_create resource, achievement }
     self.save
+    $stderr.puts "AFTER Create: the achievement is:"
+    $stderr.puts achievement.inspect
   end
 
   def give_reward
@@ -50,11 +52,10 @@ protected
 
   def initialize_achievements
     self.achievement = {}
-    puts "before requirement to achievement"
     task.requirements.each do |r|
       r.init_achievement achievement, user
     end
-    puts achievement.inspect
+#    puts achievement.inspect
   end
 
 end
